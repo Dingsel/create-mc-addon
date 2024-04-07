@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, rmSync } from "fs";
 import "./global.js"
 import { BUNDLERS, DEPS_TO_INSTALL, MODULE_NAMES } from "./global.js";
 import { useManifestTemplates } from "./lib/generateManifest.js";
@@ -31,6 +31,8 @@ const languageMap = {
 }
 
 const addonName = await InputManager.getInput("Your Addon Name")
+const PROJECT_ROOT = addonName
+
 const selectedApiTypeIndex = await InputManager.oneOf("Choose An API Type", apiChoises)
 
 const prefLang = await InputManager.oneOf("Prefered Language", languageChoises)
@@ -51,6 +53,9 @@ addBlundlerDeps({ bundlerType: selectedBundler, ts: languageMap[prefLang].ts })
 
 await InputManager.confirmAll()
 console.clear()
+
+mkdirSync(PROJECT_ROOT)
+process.chdir("./" + PROJECT_ROOT)
 
 console.log(chalk.bgBlueBright.white(`Following Packages Will Be Installed :`) + `\n${DEPS_TO_INSTALL.join("\n")}`)
 

@@ -79,7 +79,7 @@ export async function generateRegolithProfile({ addonName, bundler, manifestInfo
         writeFile("./src/RP/manifest.json", JSON.stringify(manifestInfo.rpTemplate, null, 4)),
         copyFile(join(__dirname, "../data/scriptExample.js"), `./src/BP/scripts/main.${langInfo.ts ? "ts" : "js"}`),
         copyFile(join(__dirname, "../data/cmcaBuild.js"), "./.regolith/cmcaBuild.js"),
-        copyFile(join(__dirname, "../data/.gitignore"), "./.gitignore"),
+        copyFile(join(__dirname, "../data/gitignoreContent.txt"), "./.gitignore"),
         copyFile(join(__dirname, "../data/readme.md"), "./readme.md"),
         langInfo.ts && copyFile(join(__dirname, "../data/tsconfig.json"), "./tsconfig.json"),
         langInfo.doc && copyFile(join(__dirname, "../data/tsconfigJSdoc.json"), "./tsconfig.json")

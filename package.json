@@ -1,7 +1,15 @@
 {
     "name": "create-mca",
-    "version": "0.0.1",
+    "version": "0.0.4",
     "type": "module",
+    "keywords": [
+        "Minecraft",
+        "Bedrock",
+        "Addon",
+        "MCBE",
+        "Cli",
+        "TypeScript"
+    ],
     "bin": {
         "create-mc-addon": "src/index.js"
     },
