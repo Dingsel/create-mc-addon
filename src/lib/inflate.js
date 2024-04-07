@@ -1,18 +1,20 @@
-import { createReadStream, createWriteStream } from "fs"
-import { pipeline } from "stream/promises"
-import { createUnzip } from "zlib"
-
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import JSZip from "jszip";
+import { join } from "path";
 
 /**
- * @param {import("fs").PathLike} file
- * @param {import("fs").PathLike} dest
+ * @param {string} file
+ * @param {string} dest
  */
 export async function inflate(file, dest) {
-    const inputStream = createReadStream(file)
-    const destStream = createWriteStream(dest)
+    const zip = new JSZip();
 
-    const unzip = createUnzip()
-    await pipeline(inputStream, unzip, destStream)
-    inputStream.close()
-    destStream.close()
+    const fileZip = await zip.loadAsync(readFileSync(file))
+    fileZip.forEach(async (fPath, fData) => {
+        if (fData.dir) return
+        const destPath = join(dest, fPath)
+        const folderPath = destPath.split("\\").slice(0, -1).join("\\");
+        !existsSync(folderPath) && mkdirSync(folderPath)
+        writeFileSync(destPath, await fData.async("nodebuffer"))
+    })
 }

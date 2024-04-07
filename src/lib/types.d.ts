@@ -1,5 +1,5 @@
-import { apiChoises } from ".."
-import { MODULE_NAMES } from "../global"
+import { apiChoises, languageChoises } from ".."
+import { MODULE_NAMES, BUNDLERS } from "../global"
 
 type multipleChoice = <T extends readonly string[]>(question: string, choices: T, defaultValues?: boolean[]) => Promise<Partial<T[number][]>>
 
@@ -14,14 +14,26 @@ interface ManifestGeneratorInfo {
     modules: Partial<typeof MODULE_NAMES[number][]>
 }
 
-
-type useManifestTemplates = (manifestGeneratorInfo: ManifestGeneratorInfo) => any
+type useManifestTemplates = (manifestGeneratorInfo: ManifestGeneratorInfo) => Promise<{
+    bpTemplate: any
+    rpTemplate: any
+}>
 
 interface ApiInfo {
     isStable: boolean
     isBeta: boolean
 }
 
+interface LanguageInfo {
+    ts: boolean
+    doc: boolean
+}
+
 type ApiInfoMap = {
     [key in typeof apiChoises[number]]: ApiInfo
 }
+type LanguageMap = {
+    [key in typeof languageChoises[number]]: LanguageInfo
+}
+
+type BundlerType = typeof BUNDLERS[number]

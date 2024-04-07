@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
-import getModules from "./fetchModules.js";
 import chalk from "chalk";
+import getModules from "./fetchModules.js";
 import { DEPS_TO_INSTALL, EXTERNAL_WORLD_MODULES } from "../global.js";
 
 /** @type {import("./types").useManifestTemplates} */

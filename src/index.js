@@ -1,15 +1,20 @@
 #!/usr/bin/env node
-import { mkdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import "./global.js"
-import { DEPS_TO_INSTALL, MODULE_NAMES } from "./global.js";
+import { BUNDLERS, DEPS_TO_INSTALL, MODULE_NAMES } from "./global.js";
 import { useManifestTemplates } from "./lib/generateManifest.js";
 import { InputManager } from "./lib/input.js";
 import chalk from "chalk";
 import { execSync } from "child_process";
 import { writeDownload } from "./lib/downloader.js";
 import { inflate } from "./lib/inflate.js";
+import { generateRegolithProfile } from "./lib/generateRegolithProfile.js";
+import { addBlundlerDeps } from "./lib/addBundlerDeps.js";
+import { configurePackage } from "./lib/configurePackage.js";
 
 export const apiChoises = /**@type {const} */(["Stable", "Stable + Beta API's ⭐", "Preview", "Preview + Beta API's"])
+export const languageChoises = /**@type {const} */(["JavaScript", "JavaScript + JSDoc", "TypeScript"])
+
 /**@type {import("./lib/types.js").ApiInfoMap} */
 const apiInfoMap = {
     "Stable": { isStable: true, isBeta: false },
@@ -18,37 +23,62 @@ const apiInfoMap = {
     "Preview + Beta API's": { isStable: false, isBeta: true }
 }
 
+/**@type {import("./lib/types.js").LanguageMap} */
+const languageMap = {
+    "JavaScript": { ts: false, doc: false },
+    "JavaScript + JSDoc": { ts: false, doc: true },
+    "TypeScript": { ts: true, doc: false }
+}
+
 const addonName = await InputManager.getInput("Your Addon Name")
 const selectedApiTypeIndex = await InputManager.oneOf("Choose An API Type", apiChoises)
 
-await InputManager.oneOf("Prefered Language", ["JavaScript", "JavaScript + JSDoc", "TypeScript"])
+const prefLang = await InputManager.oneOf("Prefered Language", languageChoises)
+const langInfo = languageMap[prefLang]
 
 const modules = await InputManager.multipleChoice("Choose Prefered Modules", MODULE_NAMES, [true, true])
+const apiInfo = apiInfoMap[selectedApiTypeIndex]
 
-if (await InputManager.boolOf("Use A Bundler")) {
-    await InputManager.oneOf("Bundler", ["esbuild ⭐", "rollup", "webpack"])
-}
-
-await InputManager.confirmAll()
-console.clear()
-
-const res = await useManifestTemplates({
-    apiInfo: apiInfoMap[selectedApiTypeIndex],
+const manifestInfo = await useManifestTemplates({
+    apiInfo,
     addonName,
     modules
 })
 
-console.log(chalk.bgBlueBright.white(`Following Packages Will Be Installed :`) + `\n${" ".repeat(8)}${DEPS_TO_INSTALL.join("\n")}`)
+/** @type {import("./lib/types.js").BundlerType}*/
+const selectedBundler = await InputManager.oneOf("Bundler", BUNDLERS);
+addBlundlerDeps({ bundlerType: selectedBundler, ts: languageMap[prefLang].ts })
+
+await InputManager.confirmAll()
+console.clear()
+
+console.log(chalk.bgBlueBright.white(`Following Packages Will Be Installed :`) + `\n${DEPS_TO_INSTALL.join("\n")}`)
 
 execSync("npm init -y")
 execSync("npm i " + DEPS_TO_INSTALL.join(" "))
 
-console.log(chalk.bgBlueBright.white(`Additionally Regolith Will Be Downloaded`))
+console.log(chalk.bgBlueBright.white(`Additionally Regolith Will Be Downloaded...`))
 
-mkdirSync("./.regolith")
+const regolithFolderPath = "./.regolith"
+const downloadDest = "./.regolith/regolith.zip"
 
-await writeDownload("https://github.com/Bedrock-OSS/regolith/releases/download/1.2.0/regolith_1.2.0_windows_amd64.zip", "./.regolith/regolith.zip")
+!existsSync(regolithFolderPath) && mkdirSync(regolithFolderPath)
 
-await inflate("./.regolith/regolith.zip", "./.regolith/regolith/")
+await writeDownload("https://github.com/Bedrock-OSS/regolith/releases/download/1.2.0/regolith_1.2.0_windows_amd64.zip", downloadDest)
 
-writeFileSync("./res.json", JSON.stringify(res))
+await inflate(downloadDest, "./.regolith/regolith/")
+rmSync(downloadDest)
+
+generateRegolithProfile({
+    addonName,
+    bundler: selectedBundler,
+    manifestInfo,
+    langInfo,
+    apiInfo
+})
+
+configurePackage({
+    addonName
+})
+
+console.warn("Done!\n\nTo Start Developing Navigate Into The Project And Type `npm run dev`.\n\nHappy Coding!")

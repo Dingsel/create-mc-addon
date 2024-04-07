@@ -6,6 +6,8 @@ export const DEPS_TO_INSTALL = []
 
 export const IS_SERVER = false;
 
+export const BUNDLERS = /**@type {const}*/(["esbuild", "none"])
+
 export const MODULE_NAMES = /**@type {const}*/([
     "@minecraft/server",
     "@minecraft/server-ui",
