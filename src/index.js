@@ -51,7 +51,7 @@ const manifestInfo = await useManifestTemplates({
 const selectedBundler = await InputManager.oneOf("Bundler", BUNDLERS);
 addBlundlerDeps({ bundlerType: selectedBundler, ts: languageMap[prefLang].ts })
 
-await InputManager.confirmAll()
+if(!await InputManager.confirmAll()) process.exit(0)
 console.clear()
 
 mkdirSync(PROJECT_ROOT)
