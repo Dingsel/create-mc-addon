@@ -1,5 +1,5 @@
 {
-    "name": "create-mc-addon",
+    "name": "create-mca",
     "version": "0.0.1",
     "type": "module",
     "bin": {
