@@ -35,8 +35,12 @@ switch (bundlerType) {
             external: [
                 "@minecraft/server",
                 "@minecraft/server-ui",
-                "@minecraft/server-net",
                 "@minecraft/server-admin",
+                "@minecraft/server-gametest",
+                "@minecraft/server-net",
+                "@minecraft/server-common",
+                "@minecraft/server-editor",
+                "@minecraft/debug-utilities",
             ]
         })
         delOldFiles()
