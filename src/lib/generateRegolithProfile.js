@@ -35,7 +35,7 @@ export async function generateRegolithProfile({ addonName, bundler, manifestInfo
             "filterDefinitions": {
                 "cmcaBuild": {
                     "runWith": "shell",
-                    "command": "cmca-build"
+                    "command": "cmca-build.cmd"
                 },
             },
             "profiles": {
