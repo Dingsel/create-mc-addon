@@ -34,8 +34,8 @@ export async function generateRegolithProfile({ addonName, bundler, manifestInfo
             "dataPath": "./src/data",
             "filterDefinitions": {
                 "cmcaBuild": {
-                    "runWith": "nodejs",
-                    "script": "./.regolith/cmcaBuild.js"
+                    "runWith": "shell",
+                    "command": "cmca-build"
                 },
             },
             "profiles": {
@@ -78,7 +78,6 @@ export async function generateRegolithProfile({ addonName, bundler, manifestInfo
         writeFile("./src/BP/manifest.json", JSON.stringify(manifestInfo.bpTemplate, null, 4)),
         writeFile("./src/RP/manifest.json", JSON.stringify(manifestInfo.rpTemplate, null, 4)),
         copyFile(join(__dirname, "../data/scriptExample.js"), `./src/BP/scripts/main.${langInfo.ts ? "ts" : "js"}`),
-        copyFile(join(__dirname, "../data/cmcaBuild.js"), "./.regolith/cmcaBuild.js"),
         copyFile(join(__dirname, "../data/gitignoreContent.txt"), "./.gitignore"),
         copyFile(join(__dirname, "../data/readme.md"), "./readme.md"),
         langInfo.ts && copyFile(join(__dirname, "../data/tsconfig.json"), "./tsconfig.json"),

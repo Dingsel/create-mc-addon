@@ -6,8 +6,8 @@ import { readFileSync, writeFileSync } from "fs";
 export function configurePackage({ addonName }) {
     const packageJSON = JSON.parse(readFileSync("./package.json").toString())
     packageJSON.scripts = {
-        "dev": ".\\.regolith\\regolith\\regolith.exe watch",
-        "export": ".\\.regolith\\regolith\\regolith.exe run export",
+        "dev": "cmca watch",
+        "export": "cmca run export",
     }
     packageJSON.name = addonName
     packageJSON.type = "module"

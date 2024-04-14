@@ -1,11 +1,15 @@
+#!/usr/bin/env node
+import { readdirSync } from "fs"
+import { rm } from "fs/promises"
+
 let isDev = true
 let ts = false
-/**@type {import("../lib/types.js").BundlerType} */
+/**@type {import("./types").BundlerType} */
 let bundlerType = "none"
 
 try {
     /**
-     * @type {{envMode : "dev" | "release", bundlerType : import("../lib/types.js").BundlerType}}
+     * @type {{envMode : "dev" | "release", bundlerType : import("./types").BundlerType}}
      */
     const startOptions = JSON.parse(process.argv[2])
     startOptions.envMode === "release" && (isDev = false)
@@ -13,9 +17,6 @@ try {
 } catch (error) {
     console.warn("Error Parsing Start Args")
 }
-
-import { readdirSync } from "fs"
-import { rm } from "fs/promises"
 
 switch (bundlerType) {
     case "none": break;
