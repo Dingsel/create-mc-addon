@@ -1,6 +1,6 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import JSZip from "jszip";
 import { join } from "path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 
 /**
  * @param {string} file

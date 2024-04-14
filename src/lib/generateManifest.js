@@ -1,5 +1,6 @@
-import { randomUUID } from "crypto";
 import chalk from "chalk";
+import { randomUUID } from "crypto";
+
 import getModules from "./fetchModules.js";
 import { DEPS_TO_INSTALL, EXTERNAL_WORLD_MODULES } from "../global.js";
 

@@ -1,20 +1,22 @@
 #!/usr/bin/env node
-import { mkdirSync } from "fs";
 import "./global.js"
-import { BUNDLERS, DEPS_TO_INSTALL, MODULE_NAMES } from "./global.js";
-import { useManifestTemplates } from "./lib/generateManifest.js";
-import { InputManager } from "./lib/input.js";
+
 import chalk from "chalk";
+import { mkdirSync } from "fs";
+import { arch, platform } from "os"
 import { execSync } from "child_process";
-import { generateRegolithProfile } from "./lib/generateRegolithProfile.js";
+
+import { InputManager } from "./lib/input.js";
 import { addBlundlerDeps } from "./lib/addBundlerDeps.js";
 import { configurePackage } from "./lib/configurePackage.js";
-import { arch, platform } from "os"
+import { useManifestTemplates } from "./lib/generateManifest.js";
+import { BUNDLERS, DEPS_TO_INSTALL, MODULE_NAMES } from "./global.js";
+import { generateRegolithProfile } from "./lib/generateRegolithProfile.js";
 
 export const apiChoises = /**@type {const} */(["Stable", "Stable + Beta API's ⭐", "Preview", "Preview + Beta API's"])
 export const languageChoises = /**@type {const} */(["JavaScript", "JavaScript + JSDoc", "TypeScript"])
 
-//DEPS_TO_INSTALL.push("cmca-build")
+DEPS_TO_INSTALL.push("cmca-build")
 
 if (arch() !== "x64" || platform() !== "win32") {
     if (!await InputManager.boolOf("You Are Using An Unsuportet System. Continue Anyways?", false)) {

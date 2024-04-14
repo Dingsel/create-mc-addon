@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, rmSync } from "fs"
-import { writeDownload } from "./downloader.js"
-import { inflate } from "./inflate.js"
-import { spawn } from "child_process"
 import { exit } from "process"
+import { spawn } from "child_process"
+import { existsSync, mkdirSync, rmSync } from "fs"
+
+import { inflate } from "./inflate.js"
+import { writeDownload } from "./downloader.js"
 
 const regolithFolderPath = "./.regolith"
 const downloadDest = "./.regolith/regolith.zip"

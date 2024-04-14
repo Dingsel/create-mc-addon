@@ -1,6 +1,5 @@
 import { writeFile } from "fs/promises"
 
-
 /**
  * @param {string | URL | Request} url
  * @param {import("fs").PathLike | import("fs/promises").FileHandle} path
