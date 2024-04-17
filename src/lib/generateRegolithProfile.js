@@ -44,9 +44,9 @@ export async function generateRegolithProfile({ addonName, bundler, manifestInfo
                         {
                             "filter": "cmcaBuild",
                             "settings": {
-                                envMode: "dev",
-                                bundlerType: bundler,
-                                ts: langInfo.ts
+                                "\"envMode\"": "\"dev\"",
+                                "\"bundlerType\"": "\"" + bundler + "\"",
+                                "\"ts\"": "\"" + langInfo.ts + "\""
                             }
                         }
                     ],
@@ -59,9 +59,9 @@ export async function generateRegolithProfile({ addonName, bundler, manifestInfo
                         {
                             "filter": "cmcaBuild",
                             "settings": {
-                                envMode: "release",
-                                bundlerType: bundler,
-                                ts: langInfo.ts
+                                "\"envMode\"": "\"release\"",
+                                "\"bundlerType\"": "\"" + bundler + "\"",
+                                "\"ts\"": "\"" + langInfo.ts + "\""
                             }
                         }
                     ],

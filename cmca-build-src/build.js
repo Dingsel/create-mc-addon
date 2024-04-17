@@ -15,7 +15,7 @@ try {
     startOptions.envMode === "release" && (isDev = false)
     startOptions.bundlerType && (bundlerType = startOptions.bundlerType)
 } catch (error) {
-    console.warn("Error Parsing Start Args")
+    console.error("Error Parsing Start Args", error)
 }
 
 switch (bundlerType) {
