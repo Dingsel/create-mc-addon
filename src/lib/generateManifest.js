@@ -1,8 +1,7 @@
-import chalk from "chalk";
 import { randomUUID } from "crypto";
 
 import getModules from "./fetchModules.js";
-import { DEPS_TO_INSTALL, EXTERNAL_WORLD_MODULES } from "../global.js";
+import { DEPS_TO_INSTALL, EXTERNAL_WORLD_MODULES, applyWarning } from "../global.js";
 
 /** @type {import("./types").useManifestTemplates} */
 export async function useManifestTemplates({ apiInfo: { isStable, isBeta }, addonName, modules }) {
@@ -41,18 +40,27 @@ export async function useManifestTemplates({ apiInfo: { isStable, isBeta }, addo
     }
 
     moduleData.forEach(([moduleName, moduleVersions]) => {
-        // @ts-ignore
-        if (!EXTERNAL_WORLD_MODULES.includes(moduleName)) {
-            DEPS_TO_INSTALL.push(moduleName)
-            return
-        }
+
         let index = 0;
         if (isBeta) index += 1
         if (!isStable) index += 2
-        const moduleVersion = moduleVersions[index]
-        if (!moduleVersion) return console.log(chalk.bgYellowBright.bold.white(`Module "${moduleName}" Is Not Available For The Configuration : Is Stable :${isStable} Beta API's :${isBeta}`))
 
-        DEPS_TO_INSTALL.push(moduleName)
+        let moduleVersion = moduleVersions[index]
+
+        if (!moduleVersion) {
+            const fallbackVersion = moduleVersions.find(x => x)
+            console.log(applyWarning(`Module "${moduleName}" Is Not Available For The Configuration : Is Stable :${isStable} Beta API's :${isBeta}`))
+            if (!fallbackVersion) return console.log(applyWarning("No Fallback Version Found. Skipping..."))
+            console.log("A Fallback Version Has Been Found.")
+            moduleVersion = fallbackVersion
+        }
+
+        // @ts-ignore
+        if (!EXTERNAL_WORLD_MODULES.includes(moduleName)) {
+            return DEPS_TO_INSTALL.push(`${moduleName}@${moduleVersion}`)
+        }
+
+        DEPS_TO_INSTALL.push(`${moduleName}@${moduleVersion}`)
 
         const trimedVersionName = moduleVersion.split(".").slice(0, 3).join(".")
 

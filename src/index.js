@@ -2,7 +2,7 @@
 import "./global.js"
 
 import chalk from "chalk";
-import { mkdirSync } from "fs";
+import { existsSync, mkdirSync } from "fs";
 import { arch, platform } from "os"
 import { execSync } from "child_process";
 
@@ -10,7 +10,7 @@ import { InputManager } from "./lib/input.js";
 import { addBlundlerDeps } from "./lib/addBundlerDeps.js";
 import { configurePackage } from "./lib/configurePackage.js";
 import { useManifestTemplates } from "./lib/generateManifest.js";
-import { BUNDLERS, DEPS_TO_INSTALL, MODULE_NAMES } from "./global.js";
+import { BUNDLERS, DEPS_TO_INSTALL, MODULE_NAMES, applyWarning } from "./global.js";
 import { generateRegolithProfile } from "./lib/generateRegolithProfile.js";
 
 export const apiChoises = /**@type {const} */(["Stable", "Stable + Beta API's ⭐", "Preview", "Preview + Beta API's"])
@@ -40,6 +40,12 @@ const languageMap = {
 }
 
 const addonName = await InputManager.getInput("Your Addon Name")
+
+if(existsSync(addonName)) {
+    console.error(`A Folder/File Already Exists With The Name "${addonName}". Run The Setup Again And Choose A Different Name.`)
+    process.exit(1)
+}
+
 const PROJECT_ROOT = addonName
 
 const selectedApiTypeIndex = await InputManager.oneOf("Choose An API Type", apiChoises)
@@ -66,10 +72,13 @@ console.clear()
 mkdirSync(PROJECT_ROOT)
 process.chdir("./" + PROJECT_ROOT)
 
+if (DEPS_TO_INSTALL.find(x => x.startsWith("@minecraft/math")))
+    console.log(applyWarning("@minecraft/math Can Cause An Upstream Dependency Conflict. When Installing The Node Modules Manualy Make Sure To Use The --force Flag In The npm i Command."))
+
 console.log(chalk.bgBlueBright.white(`Following Packages Will Be Installed :`) + `\n${DEPS_TO_INSTALL.join("\n")}`)
 
 execSync("npm init -y")
-execSync("npm i " + DEPS_TO_INSTALL.join(" "))
+execSync(`npm i ${DEPS_TO_INSTALL.join(" ")} --force`)
 
 generateRegolithProfile({
     addonName,
