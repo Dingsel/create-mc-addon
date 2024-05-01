@@ -15,8 +15,7 @@
         "cmca": "index.js"
     },
     "devDependencies": {
-        "@types/node": "^20.11.30",
-        "esbuild": "^0.20.2"
+        "@types/node": "^20.11.30"
     },
     "dependencies": {
         "jszip": "^3.10.1"

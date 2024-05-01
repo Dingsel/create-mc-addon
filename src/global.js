@@ -5,7 +5,7 @@ export const IS_WINDOWS = platform() === "win32"
 /** @type {string[]}*/
 export const DEPS_TO_INSTALL = []
 
-export const applyWarning = chalk.bgYellowBright.bold.white
+export const applyWarning = chalk.bgYellowBright.bold.black
 
 export const IS_SERVER = false;
 
