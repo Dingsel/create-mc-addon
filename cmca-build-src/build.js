@@ -18,12 +18,12 @@ const tsEntry = "./BP/scripts/main.ts"
 
 try {
     /**
-     * @type {{envMode : "dev" | "release", bundlerType : import("./types").BundlerType, ts : boolean}}
+     * @type {{envMode : "dev" | "release", bundlerType : import("./types").BundlerType, ts : string}}
      */
     const startOptions = JSON.parse(process.argv[2])
     startOptions.envMode === "release" && (isDev = false)
     startOptions.bundlerType && (bundlerType = startOptions.bundlerType)
-    ts = startOptions.ts
+    ts = JSON.parse(startOptions.ts)
 } catch (error) {
     console.error("Error Parsing Start Args", error)
 }
