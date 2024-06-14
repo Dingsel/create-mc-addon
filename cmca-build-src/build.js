@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "fs"
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "fs"
 import { mkdir, writeFile } from "fs/promises"
 import { createRequire } from "module"
 import { join } from "path"
@@ -38,6 +38,7 @@ switch (bundlerType) {
 
         const program = tsModule.createProgram([tsEntry], options)
         delOldFiles()
+        if(!existsSync("./BP/scripts/")) mkdirSync("./BP/scripts/")
         const emitResult = program.emit();
 
         const allDiagnostics = tsModule
@@ -80,6 +81,7 @@ switch (bundlerType) {
             ]
         })
         delOldFiles()
+        if(!existsSync("./BP/scripts/")) mkdirSync("./BP/scripts/")
         await Promise.all(
             outputFiles.map(x =>
                 writeFile(x.path, x.contents)
