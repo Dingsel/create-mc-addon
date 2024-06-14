@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync, readdirSync } from "fs"
-import { rm } from "fs/promises"
+import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "fs"
+import { mkdir, writeFile } from "fs/promises"
 import { createRequire } from "module"
 import { join } from "path"
 
@@ -37,9 +37,9 @@ switch (bundlerType) {
         const options = JSON.parse(readFileSync(join(root, "/tsconfig.json")).toString())
 
         const program = tsModule.createProgram([tsEntry], options)
+        delOldFiles()
         const emitResult = program.emit();
 
-        //Handle diagnostics
         const allDiagnostics = tsModule
             .getPreEmitDiagnostics(program)
             .concat(emitResult.diagnostics);
@@ -53,16 +53,15 @@ switch (bundlerType) {
                 console.log(tsModule.flattenDiagnosticMessageText(diagnostic.messageText, "\n"));
             }
         });
-
-        delTsFiles()
         break
     };
     case "esbuild": {
         const { build } = await import("esbuild")
-        await build({
+        const { outputFiles } = await build({
             bundle: true,
             format: "esm",
             outfile: "./BP/scripts/main.js",
+            write: false,
             entryPoints: {
                 in: ts ? tsEntry : "./BP/scripts/main.js"
             },
@@ -81,22 +80,15 @@ switch (bundlerType) {
             ]
         })
         delOldFiles()
+        await Promise.all(
+            outputFiles.map(x =>
+                writeFile(x.path, x.contents)
+            )
+        )
         break;
     }
 }
 
 function delOldFiles() {
-    readdirSync("./BP/scripts/", { recursive: true }).map((/** @type {import("fs").PathLike} */ x) => {
-        const asStr = x.toString()
-        if (asStr.endsWith("main.js") || asStr.endsWith(".map")) return
-        rm("./BP/scripts/" + x, { force: true, recursive: true })
-    })
-}
-
-function delTsFiles() {
-    readdirSync("./BP/scripts/", { recursive: true }).map((/** @type {import("fs").PathLike} */ x) => {
-        const asStr = x.toString()
-        if (asStr.endsWith(".js")) return
-        rm("./BP/scripts/" + x, { force: true, recursive: true })
-    })
+    rmSync("./BP/scripts/", { force: true, recursive: true })
 }
