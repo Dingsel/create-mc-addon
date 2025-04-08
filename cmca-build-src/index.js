@@ -10,17 +10,17 @@ const regolithFolderPath = "./.regolith"
 const downloadDest = "./.regolith/regolith.zip"
 
 if (!existsSync("./.regolith/regolith/regolith.exe")) {
-    console.warn("Regolith Has Not Been Found. It Will Be Downloaded Now")
+    console.warn("Regolith will now be downloaded locally, for this project only.")
     !existsSync(regolithFolderPath) && mkdirSync(regolithFolderPath)
 
-    await writeDownload("https://github.com/Bedrock-OSS/regolith/releases/download/1.2.0/regolith_1.2.0_windows_amd64.zip", downloadDest)
+    await writeDownload("https://github.com/Bedrock-OSS/regolith/releases/download/1.5.1/regolith_1.5.1_windows_amd64.zip", downloadDest)
 
     await inflate(downloadDest, "./.regolith/regolith/")
     rmSync(downloadDest)
 }
 
 //TODO: Optimise for CI
-const regolithProcces = spawn("./.regolith/regolith/regolith.exe", [...process.argv.slice(2)])
+const regolithProcces = spawn("./.regolith/regolith/regolith.exe", process.argv.slice(2))
 
 regolithProcces.stdout.on("data", (msg) => {
     console.log(msg.toString())

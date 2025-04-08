@@ -30,7 +30,7 @@ export async function useManifestTemplates({ apiInfo: { isStable, isBeta }, addo
             {
                 "type": "script",
                 "language": "javascript",
-                "uuid": "4477d450-844c-41a1-81e7-b9e08057fa43",
+                "uuid": randomUUID(),
                 "entry": "scripts/main.js",
                 "version": [1, 0, 0]
             }

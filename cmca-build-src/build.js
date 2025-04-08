@@ -38,7 +38,7 @@ switch (bundlerType) {
 
         const program = tsModule.createProgram([tsEntry], options)
         delOldFiles()
-        if(!existsSync("./BP/scripts/")) mkdirSync("./BP/scripts/")
+        if (!existsSync("./BP/scripts/")) mkdirSync("./BP/scripts/")
         const emitResult = program.emit();
 
         const allDiagnostics = tsModule
@@ -81,7 +81,7 @@ switch (bundlerType) {
             ]
         })
         delOldFiles()
-        if(!existsSync("./BP/scripts/")) mkdirSync("./BP/scripts/")
+        if (!existsSync("./BP/scripts/")) mkdirSync("./BP/scripts/")
         await Promise.all(
             outputFiles.map(x =>
                 writeFile(x.path, x.contents)
@@ -92,5 +92,5 @@ switch (bundlerType) {
 }
 
 function delOldFiles() {
-    rmSync("./BP/scripts/", { force: true, recursive: true })
+    rmSync("./BP/scripts/", { force: true, recursive: true, maxRetries: 3, retryDelay: 250 })
 }
